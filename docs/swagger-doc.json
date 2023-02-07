@@ -1,0 +1,2558 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Groccery API documentation",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://groccery-api.onrender.com/api",
+      "description": "Production server"
+    },
+    {
+      "url": "http://localhost:4000/api",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "default": "test@gmail.com" },
+                  "password": { "type": "string", "default": "123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "User logged in successfully."
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Register a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "default": "Jon Doe" },
+                  "email": { "type": "string", "default": "test@gmail.com" },
+                  "phone": { "type": "string", "default": "5252635241" },
+                  "password": { "type": "string", "default": "123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "User registered successfully."
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid Credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Category"],
+        "summary": "Get a list of categories",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "count": { "type": "number" },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Category"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Category"],
+        "summary": "Create a new category",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "default": "Fruits" },
+                  "image": {
+                    "type": "file",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Category created successfully."
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validaton error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/{id}": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Category"],
+        "summary": "Get a category with specified ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Category ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Product ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Category"],
+        "summary": "Delete a category with specified ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Category ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Category deleted successfully."
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "400": {
+            "description": "Invalid Category ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Category"],
+        "summary": "Update a product",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Category ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "default": "Fruits" },
+                  "image": {
+                    "type": "file",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "string", "default": "success" },
+                "message": {
+                  "type": "string",
+                  "default": "Product updated successfully."
+                },
+                "data": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Product ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Product"],
+        "summary": "Get a list of products",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "count": { "type": "number" },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Product"],
+        "consumes": ["multipart/form-data"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "default": "Red strawberry" },
+                  "category": {
+                    "type": "string",
+                    "default": "63705b8724a507ee30966816"
+                  },
+                  "brand": { "type": "string", "default": "Red strawberry" },
+                  "description": {
+                    "type": "string",
+                    "default": "Fresh Red strawberry & blue berries"
+                  },
+                  "weight": { "type": "string", "default": "100 Gm" },
+                  "salePrice": { "type": "number", "default": 100 },
+                  "retailPrice": { "type": "number", "default": 90 },
+                  "rating": { "type": "number", "default": 4.3 },
+                  "stock": { "type": "number", "default": 10 },
+                  "image": {
+                    "type": "file",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "string", "default": "success" },
+                "message": {
+                  "type": "string",
+                  "default": "Product added successfully."
+                },
+                "data": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validaton error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/hot": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Product"],
+        "summary": "Get a list of hot products",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "count": { "type": "number" },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Product"],
+        "summary": "Get a product with specified ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Product ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Product ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Product"],
+        "summary": "Delete a product with specified ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Product ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Product deleted successfully."
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid product ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Product"],
+        "summary": "Update a product",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Product ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "default": "Red strawberry" },
+                  "category": {
+                    "type": "string",
+                    "default": "63705b8724a507ee30966816"
+                  },
+                  "brand": { "type": "string", "default": "Red strawberry" },
+                  "description": {
+                    "type": "string",
+                    "default": "Fresh Red strawberry & blue berries"
+                  },
+                  "weight": { "type": "string", "default": "100 Gm" },
+                  "salePrice": { "type": "number", "default": 100 },
+                  "retailPrice": { "type": "number", "default": 90 },
+                  "rating": { "type": "number", "default": 4.3 },
+                  "stock": { "type": "number", "default": 10 },
+                  "image": {
+                    "type": "file",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Product updated successfully."
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Product ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/category/{id}": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Product"],
+        "summary": "Get a product list by category",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "category ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "count": { "type": "number" },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Product ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cart": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Cart"],
+        "summary": "Get a list of cart items",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "count": { "type": "number" },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Cart" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Cart"],
+        "summary": "Create a new cart item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "product": {
+                    "type": "string",
+                    "default": "6370f340cf88e3ec4c1502a8"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Cart item added successfully."
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Cart" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+
+          "422": {
+            "description": "Validaton error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cart/{id}": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Cart"],
+        "summary": "Get a cart item with specified ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Cart ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Cart"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Cart"],
+        "summary": "Delete a cart with specified ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Cart ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Cart deleted successfully."
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Cart"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Cart"],
+        "summary": "Update a cart item quantity",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Cart ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quantity": { "type": "number", "default": 1 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Cart item updated successfully."
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Cart"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wishlist": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Wishlist"],
+        "summary": "Get a list of wishlist items",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "count": { "type": "number" },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Wishlist" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Wishlist"],
+        "summary": "Create a new wishlist item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "product": {
+                    "type": "string",
+                    "default": "6370f340cf88e3ec4c1502a8"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Wishlist item added successfully."
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Wishlist" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+
+          "422": {
+            "description": "Validaton error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wishlist/{id}": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Wishlist"],
+        "summary": "Get a wishlist item with specified ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Wishlist ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Wishlist"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Wishlist"],
+        "summary": "Delete a wishlist item with specified ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Wishlist ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Wishlist item deleted successfully."
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Wishlist"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/address": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Address"],
+        "summary": "Get a list of addresses",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "count": { "type": "number" },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Address" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Address"],
+        "summary": "Create a new address",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullName": { "type": "string", "default": "Jon Doe" },
+                  "phone": { "type": "string", "default": "5265895475" },
+                  "pincode": { "type": "string", "default": "526854" },
+                  "city": { "type": "string", "default": "New york" },
+                  "house": { "type": "string", "default": "Bakers street 315" },
+                  "area": { "type": "string", "default": "wallstreet" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Address added successfully."
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Address" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+
+          "422": {
+            "description": "Validaton error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/address/{id}": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Address"],
+        "summary": "Get a address with specified ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Address ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Address"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Address"],
+        "summary": "Delete a address with specified ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Address ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Address deleted successfully."
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Address"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Address"],
+        "summary": "Update a Address",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Address ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullName": { "type": "string", "default": "Jon Doe" },
+                  "phone": { "type": "string", "default": "6854585256" },
+                  "pincode": { "type": "string", "default": "253641" },
+                  "city": { "type": "string", "default": "New york" },
+                  "house": { "type": "string", "default": "Bakers street 315" },
+                  "area": { "type": "string", "default": "wallstreet" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Address updated successfully."
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Address"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Order"],
+        "summary": "Get a list of order items",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "count": { "type": "number" },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Order" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Order"],
+        "summary": "Create a new order item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "product": {
+                    "type": "string",
+                    "default": "6370f340cf88e3ec4c1502a8"
+                  },
+                  "quantity": { "type": "number", "default": "5" },
+                  "totalPrice": { "type": "number", "default": "100" },
+                  "address": {
+                    "type": "string",
+                    "default": "63d90377a373a0aea895f528"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Order created successfully."
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Order" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+
+          "422": {
+            "description": "Validaton error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Order"],
+        "summary": "Get a order item with specified ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Order ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [{ "xAuth": [] }],
+        "tags": ["Order"],
+        "summary": "Delete a order with specified ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Order ID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "default": "success" },
+                    "message": {
+                      "type": "string",
+                      "default": "Order deleted successfully."
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Token error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "xAuth": {
+        "type": "apiKey",
+        "name": "x-token",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "Product": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "category": { "type": "string" },
+          "brand": { "type": "string" },
+          "description": { "type": "string" },
+          "image": { "type": "string" },
+          "weight": { "type": "string" },
+          "salePrice": { "type": "number" },
+          "retailPrice": { "type": "number" },
+          "rating": { "type": "number" },
+          "reviews": { "type": "number" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "modifiedAt": { "type": "string", "format": "date-time" },
+          "_id": { "type": "string" }
+        }
+      },
+      "User": {
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "phone": { "type": "string" },
+          "userType": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "modifiedAt": { "type": "string", "format": "date-time" },
+          "_id": { "type": "string" }
+        }
+      },
+      "Address": {
+        "properties": {
+          "userId": { "type": "string" },
+          "fullName": { "type": "string" },
+          "phone": { "type": "string" },
+          "pincode": { "type": "string" },
+          "city": { "type": "string" },
+          "house": { "type": "string" },
+          "area": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "modifiedAt": { "type": "string", "format": "date-time" },
+          "_id": { "type": "string" }
+        }
+      },
+      "Cart": {
+        "properties": {
+          "userId": { "type": "string" },
+          "product": {
+            "type": "object",
+            "$ref": "#/components/schemas/Product"
+          },
+          "quantity": { "type": "number" },
+          "_id": { "type": "string" }
+        }
+      },
+      "Category": {
+        "properties": {
+          "title": { "type": "string" },
+          "image": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "modifiedAt": { "type": "string", "format": "date-time" },
+          "_id": { "type": "string" }
+        }
+      },
+      "Wishlist": {
+        "properties": {
+          "userId": { "type": "string" },
+          "product": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "_id": { "type": "string" }
+        }
+      },
+      "Order": {
+        "properties": {
+          "user": { "type": "string" },
+          "product": { "type": "string" },
+          "quantity": { "type": "number" },
+          "expectedDelivery": { "type": "string", "format": "date-time" },
+          "totalPrice": { "type": "number" },
+          "deliveryStatus": { "type": "string", "enum": ["Array"] },
+          "address": { "type": "string" },
+          "_id": { "type": "string" }
+        }
+      },
+      "Error": {
+        "properties": {
+          "status": { "type": "string", "default": "error" },
+          "message": { "type": "string" }
+        }
+      }
+    }
+  }
+}
