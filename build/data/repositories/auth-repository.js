@@ -39,7 +39,7 @@ let AuthRepository = class AuthRepository {
     }
     _checkEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield user_model_1.default.find({ email: email });
+            const result = yield user_model_1.default.findOne({ email: email });
             if (result) {
                 return true;
             }

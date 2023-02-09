@@ -19,7 +19,7 @@ class AuthRepository implements IAuthRepository {
   }
 
   private async _checkEmail(email: string): Promise<any> {
-    const result = await User.find({ email: email });
+    const result = await User.findOne({ email: email });
     if (result) {
       return true;
     } else {
