@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const compression = require('compression');
+const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const helmet_1 = __importDefault(require("helmet"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
@@ -27,6 +28,7 @@ class Server {
         this._server.set('port', process.env.PORT || 4000);
         this._server.use(express_1.default.json());
         this._server.use((0, helmet_1.default)());
+        this._server.use((0, cors_1.default)());
         this._server.use(compression());
         this._server.use(router_1.default);
         this._server.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
