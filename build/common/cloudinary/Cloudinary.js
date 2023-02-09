@@ -11,12 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Cloudinary = void 0;
 const cloudinary_1 = require("cloudinary");
+require('dotenv').config();
 class Cloudinary {
     constructor() {
         cloudinary_1.v2.config({
-            cloud_name: 'ddrmdpexm',
-            api_key: '354137164941335',
-            api_secret: 'X5Ie1W7kfrVjgL_cqPDRJQRPlqE',
+            cloud_name: process.env.CLOUDINARY_NAME,
+            api_key: process.env.CLOUDINARY_API_KEY,
+            api_secret: process.env.CLOUDINARY_SECRET_KEY,
         });
     }
     static get instance() {

@@ -1,13 +1,13 @@
 import { v2 as cloudinary } from 'cloudinary';
-
+require('dotenv').config();
 export class Cloudinary {
   private static object: Cloudinary;
 
   private constructor() {
     cloudinary.config({
-      cloud_name: 'ddrmdpexm',
-      api_key: '354137164941335',
-      api_secret: 'X5Ie1W7kfrVjgL_cqPDRJQRPlqE',
+      cloud_name: process.env.CLOUDINARY_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_SECRET_KEY,
     });
   }
 
