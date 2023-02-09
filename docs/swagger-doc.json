@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "https://groccery-api.onrender.com/api",
+      "url": "https://groccery.onrender.com/api",
       "description": "Production server"
     },
     {
