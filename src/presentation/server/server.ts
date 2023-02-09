@@ -1,4 +1,5 @@
 const compression = require('compression');
+import cors from 'cors';
 import express, { Express } from 'express';
 import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
@@ -16,6 +17,7 @@ export default class Server {
     this._server.set('port', process.env.PORT || 4000);
     this._server.use(express.json());
     this._server.use(helmet());
+    this._server.use(cors());
     this._server.use(compression());
     this._server.use(router);
     this._server.use(
